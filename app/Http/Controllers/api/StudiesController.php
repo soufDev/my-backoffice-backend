@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Models\Studies;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -14,12 +15,8 @@ class StudiesController extends Controller
      */
     public function index()
     {
-        //
-        $output = [
-            "last_name" => "AIT AKKACHE",
-            "first_name" => "Soufiane"
-        ];
-        return Response($output);
+       $studies = Studies::all();
+       return response($studies);
     }
 
     /**
