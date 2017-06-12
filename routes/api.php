@@ -16,3 +16,4 @@ use \Illuminate\Support\Facades\Route;
 */
 
 Route::resource('studies', 'api\StudiesController');
+Route::resource('skills', 'api\SkillsController');

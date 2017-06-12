@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Models\Studies;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Response;
 
 class StudiesController extends Controller
 {
@@ -16,17 +17,7 @@ class StudiesController extends Controller
     public function index()
     {
        $studies = Studies::all();
-       return response($studies);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+       return Response::json($studies, 200, [], JSON_NUMERIC_CHECK);
     }
 
     /**
@@ -37,7 +28,20 @@ class StudiesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = [
+            'speciality' => $request->input('speciality'),
+            'establishment' => $request->input('establishment'),
+            'month_join' => $request->input('month_join'),
+            'year_join' => $request->input('year_join'),
+            'month_finish' => $request->input('month_finish'),
+            'year_finish' => $request->input('year_finish'),
+            'description' => $request->input('description')
+        ];
+        $studies = Studies::create($request->toArray());
+        var_dump($studies);
+        if(!$studies)
+            return Response::json(["error" => "study can't be created"], 400);
+        return response()->json(['study' => $studies], 200);
     }
 
     /**
@@ -48,7 +52,11 @@ class StudiesController extends Controller
      */
     public function show($id)
     {
-        //
+        $study = Studies::find($id);
+        if ($study)
+            return response()->json(['study'=>$study], 200);
+        return response()->json(['message'=>'Not Found'], 404);
+
     }
 
     /**
@@ -59,7 +67,12 @@ class StudiesController extends Controller
      */
     public function edit($id)
     {
-        //
+
+        $study = Studies::find($id);
+        if (!$study)
+            return response()->json(['message'=>'Not Found'], 404);
+        return response()->json(['study'=>$study], 200);
+
     }
 
     /**
@@ -71,7 +84,11 @@ class StudiesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $study = Studies::find($id);
+        if (!$study)
+            return Response::json(['message'=>'Not Found'], 404);
+        $study->update($request->toArray());
+        return Response::json(['study' => $study], 200);
     }
 
     /**
@@ -82,7 +99,12 @@ class StudiesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $study = Studies::find($id);
+
+        if(!$study)
+            return Response::json(['message'=>'Not Found'], 404);
+        $study->delete();
+        return Response::json([], 204);
     }
 
 }
